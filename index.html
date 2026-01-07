@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Bucket List</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- Sidebar (Desktop) -->
+    <aside class="sidebar">
+        <h2>🌟 BucketList</h2>
+
+        <nav>
+            <button class="nav-btn active" data-filter="all">All Goals</button>
+            <button class="nav-btn" data-filter="pending">Pending</button>
+            <button class="nav-btn" data-filter="completed">Completed</button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="themeToggle">
+                <i class="fa-solid fa-moon"></i> Theme
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <!-- Top Bar -->
+        <header class="topbar">
+            <input type="text" id="searchInput" placeholder="Search goals...">
+        </header>
+
+        <!-- Dashboard -->
+        <section class="dashboard">
+            <div class="stat">
+                <h3 id="totalCount">0</h3>
+                <p>Total</p>
+            </div>
+            <div class="stat">
+                <h3 id="completedCount">0</h3>
+                <p>Completed</p>
+            </div>
+            <div class="stat">
+                <h3 id="pendingCount">0</h3>
+                <p>Pending</p>
+            </div>
+        </section>
+
+        <!-- Add Goal -->
+        <section class="add-goal">
+            <input type="text" id="goalInput" placeholder="Add a new dream...">
+
+            <select id="categorySelect">
+                <option value="Life">Life</option>
+                <option value="Career">Career</option>
+                <option value="Travel">Travel</option>
+                <option value="Personal">Personal</option>
+            </select>
+
+            <button id="addBtn">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </section>
+
+        <!-- Goals -->
+        <section class="goals">
+            <ul id="goalList"></ul>
+
+            <div id="emptyState">
+                <p>✨ No goals yet. Start by adding one!</p>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
