@@ -1,6 +1,3 @@
-/* ===============================
-   ELEMENT REFERENCES
-================================ */
 const goalInput = document.getElementById("goalInput");
 const categorySelect = document.getElementById("categorySelect");
 const addBtn = document.getElementById("addBtn");
@@ -15,76 +12,56 @@ const pendingCount = document.getElementById("pendingCount");
 
 const emptyState = document.getElementById("emptyState");
 const themeToggle = document.getElementById("themeToggle");
+const mobileThemeToggle = document.getElementById("mobileThemeToggle");
 
-/* ===============================
-   DATA
-================================ */
 let goals = JSON.parse(localStorage.getItem("goals")) || [];
 let currentFilter = "all";
 
-/* ===============================
-   SAVE TO localStorage
-================================ */
-function saveGoals() {
-    localStorage.setItem("goals", JSON.stringify(goals));
-}
-
-/* ===============================
-   THEME TOGGLE
-================================ */
+/* Theme */
 const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
-    document.body.classList.add("dark");
-}
+if (savedTheme === "dark") document.body.classList.add("dark");
 
-themeToggle.addEventListener("click", () => {
+function toggleTheme() {
     document.body.classList.toggle("dark");
     localStorage.setItem(
         "theme",
         document.body.classList.contains("dark") ? "dark" : "light"
     );
-});
+}
 
-/* ===============================
-   DASHBOARD COUNTS
-================================ */
+themeToggle.addEventListener("click", toggleTheme);
+mobileThemeToggle.addEventListener("click", toggleTheme);
+
+/* Save */
+function saveGoals() {
+    localStorage.setItem("goals", JSON.stringify(goals));
+}
+
+/* Dashboard */
 function updateDashboard() {
     const total = goals.length;
     const completed = goals.filter(g => g.completed).length;
-    const pending = total - completed;
-
     totalCount.textContent = total;
     completedCount.textContent = completed;
-    pendingCount.textContent = pending;
+    pendingCount.textContent = total - completed;
 }
 
-/* ===============================
-   RENDER GOALS
-================================ */
+/* Render */
 function renderGoals() {
     goalList.innerHTML = "";
 
     const searchText = searchInput.value.toLowerCase();
 
-    const filteredGoals = goals.filter(goal => {
-        const matchesSearch = goal.text.toLowerCase().includes(searchText);
-
-        if (currentFilter === "completed") {
-            return goal.completed && matchesSearch;
-        }
-        if (currentFilter === "pending") {
-            return !goal.completed && matchesSearch;
-        }
-        return matchesSearch;
+    const filtered = goals.filter(goal => {
+        const match = goal.text.toLowerCase().includes(searchText);
+        if (currentFilter === "completed") return goal.completed && match;
+        if (currentFilter === "pending") return !goal.completed && match;
+        return match;
     });
 
-    if (filteredGoals.length === 0) {
-        emptyState.style.display = "block";
-    } else {
-        emptyState.style.display = "none";
-    }
+    emptyState.style.display = filtered.length === 0 ? "block" : "none";
 
-    filteredGoals.forEach((goal, index) => {
+    filtered.forEach(goal => {
         const li = document.createElement("li");
         li.className = "goal-item";
 
@@ -101,7 +78,6 @@ function renderGoals() {
             </button>
         `;
 
-        /* Toggle completed */
         li.querySelector("input").addEventListener("change", () => {
             goal.completed = !goal.completed;
             saveGoals();
@@ -109,7 +85,6 @@ function renderGoals() {
             updateDashboard();
         });
 
-        /* Delete */
         li.querySelector(".delete-btn").addEventListener("click", () => {
             goals.splice(goals.indexOf(goal), 1);
             saveGoals();
@@ -123,54 +98,39 @@ function renderGoals() {
     updateDashboard();
 }
 
-/* ===============================
-   ADD GOAL
-================================ */
+/* Add */
 addBtn.addEventListener("click", () => {
     const text = goalInput.value.trim();
-    const category = categorySelect.value;
-
-    if (text === "") return;
+    if (!text) return;
 
     goals.push({
         text,
-        category,
+        category: categorySelect.value,
         completed: false
     });
 
     goalInput.value = "";
     saveGoals();
     renderGoals();
-    updateDashboard();
 });
 
-/* ENTER KEY SUPPORT */
-goalInput.addEventListener("keypress", (e) => {
+goalInput.addEventListener("keypress", e => {
     if (e.key === "Enter") addBtn.click();
 });
 
-/* ===============================
-   FILTER BUTTONS
-================================ */
+/* Filters */
 filterButtons.forEach(btn => {
     btn.addEventListener("click", () => {
         filterButtons.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-
         currentFilter = btn.dataset.filter;
         renderGoals();
     });
 });
 
-/* ===============================
-   SEARCH
-================================ */
-searchInput.addEventListener("input", () => {
-    renderGoals();
-});
+/* Search */
+searchInput.addEventListener("input", renderGoals);
 
-/* ===============================
-   INITIAL LOAD
-================================ */
+/* Init */
 renderGoals();
 updateDashboard();
