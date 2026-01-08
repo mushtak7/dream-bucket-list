@@ -43,7 +43,7 @@
     <!-- Main Content -->
     <main class="content">
 
-        <!-- Top Bar -->
+        <!-- Search -->
         <header class="topbar">
             <input type="text" id="searchInput" placeholder="Search goals...">
         </header>
@@ -64,7 +64,7 @@
             </div>
         </section>
 
-        <!-- Add Goal -->
+        <!-- Add Goal (Desktop) -->
         <section class="add-goal">
             <input type="text" id="goalInput" placeholder="Add a new dream...">
 
@@ -83,9 +83,8 @@
         <!-- Goals -->
         <section class="goals">
             <ul id="goalList"></ul>
-
             <div id="emptyState">
-                <p>✨ No goals yet. Start by adding one!</p>
+                ✨ No goals yet. Start by adding one!
             </div>
         </section>
 
@@ -114,6 +113,11 @@
         <span>Theme</span>
     </button>
 </div>
+
+<!-- Floating Add Button (Mobile) -->
+<button class="fab" id="mobileAddBtn">
+    <i class="fa-solid fa-plus"></i>
+</button>
 
 <script src="script.js"></script>
 </body>
