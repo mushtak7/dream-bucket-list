@@ -1,6 +1,7 @@
 const goalInput = document.getElementById("goalInput");
 const categorySelect = document.getElementById("categorySelect");
 const addBtn = document.getElementById("addBtn");
+const mobileAddBtn = document.getElementById("mobileAddBtn");
 const goalList = document.getElementById("goalList");
 
 const searchInput = document.getElementById("searchInput");
@@ -18,9 +19,6 @@ let goals = JSON.parse(localStorage.getItem("goals")) || [];
 let currentFilter = "all";
 
 /* Theme */
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") document.body.classList.add("dark");
-
 function toggleTheme() {
     document.body.classList.toggle("dark");
     localStorage.setItem(
@@ -29,8 +27,8 @@ function toggleTheme() {
     );
 }
 
-themeToggle.addEventListener("click", toggleTheme);
-mobileThemeToggle.addEventListener("click", toggleTheme);
+if (themeToggle) themeToggle.addEventListener("click", toggleTheme);
+if (mobileThemeToggle) mobileThemeToggle.addEventListener("click", toggleTheme);
 
 /* Save */
 function saveGoals() {
@@ -39,27 +37,25 @@ function saveGoals() {
 
 /* Dashboard */
 function updateDashboard() {
-    const total = goals.length;
     const completed = goals.filter(g => g.completed).length;
-    totalCount.textContent = total;
+    totalCount.textContent = goals.length;
     completedCount.textContent = completed;
-    pendingCount.textContent = total - completed;
+    pendingCount.textContent = goals.length - completed;
 }
 
 /* Render */
 function renderGoals() {
     goalList.innerHTML = "";
-
-    const searchText = searchInput.value.toLowerCase();
+    const search = searchInput.value.toLowerCase();
 
     const filtered = goals.filter(goal => {
-        const match = goal.text.toLowerCase().includes(searchText);
+        const match = goal.text.toLowerCase().includes(search);
         if (currentFilter === "completed") return goal.completed && match;
         if (currentFilter === "pending") return !goal.completed && match;
         return match;
     });
 
-    emptyState.style.display = filtered.length === 0 ? "block" : "none";
+    emptyState.style.display = filtered.length ? "none" : "block";
 
     filtered.forEach(goal => {
         const li = document.createElement("li");
@@ -99,7 +95,7 @@ function renderGoals() {
 }
 
 /* Add */
-addBtn.addEventListener("click", () => {
+function addGoal() {
     const text = goalInput.value.trim();
     if (!text) return;
 
@@ -112,10 +108,13 @@ addBtn.addEventListener("click", () => {
     goalInput.value = "";
     saveGoals();
     renderGoals();
-});
+}
+
+addBtn.addEventListener("click", addGoal);
+mobileAddBtn.addEventListener("click", addGoal);
 
 goalInput.addEventListener("keypress", e => {
-    if (e.key === "Enter") addBtn.click();
+    if (e.key === "Enter") addGoal();
 });
 
 /* Filters */
